@@ -26,6 +26,7 @@
         border-radius: 20px;
         padding: 40px;
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        max-width: 700px;
         width: 70%;
         text-align: center;
       }
@@ -39,7 +40,7 @@
 
       .stats {
         display: flex;
-        justify-content: space-around;
+        justify-content: center;
         margin-bottom: 10px;
         flex-wrap: wrap;
         gap: 15px;
@@ -51,6 +52,7 @@
         padding: 15px 25px;
         border-radius: 10px;
         min-width: 120px;
+        flex: 0 0 auto;
       }
 
       .stat-label {
@@ -1259,6 +1261,7 @@
           .querySelector(".leaderboard-screen")
           .classList.remove("active");
         document.querySelector(".mode-screen").classList.remove("active");
+        document.querySelector(".game-screen").classList.remove("active");
         document.querySelector(".start-screen").classList.add("active");
         document.getElementById("fixedModeSelector").style.display = "none";
       }
