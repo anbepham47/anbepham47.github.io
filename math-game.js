@@ -717,29 +717,35 @@ function showResults() {
 
   // Determine feedback based on percentage
   let emoji, message;
-  if (percentage >= 99) {
-    emoji = "🏆";
-    message = `<strong>${getText("outstanding")}</strong> ${getText(
-      "outstandingMsg"
-    )}`;
-  } else if (percentage >= 90) {
-    emoji = "🌟";
-    message = `<strong>${getText("excellent")}</strong> ${getText(
-      "excellentMsg"
-    )}`;
-  } else if (percentage >= 80) {
-    emoji = "👍";
-    message = `<strong>${getText("goodJob")}</strong> ${getText("goodJobMsg")}`;
-  } else if (percentage >= 70) {
-    emoji = "💪";
-    message = `<strong>${getText("keepPracticing")}</strong> ${getText(
-      "keepPracticingMsg"
-    )}`;
+  if (correctAnswers < totalQuestions) {
+    if (percentage >= 50) {
+      emoji = "💪";
+      message = `<strong>${getText("keepPracticing")}</strong> ${getText(
+        "keepPracticingMsg"
+      )}`;
+    } else {
+      emoji = "🌱";
+      message = `<strong>${getText("greatEffort")}</strong> ${getText(
+        "greatEffortMsg"
+      )}`;
+    }
   } else {
-    emoji = "🌱";
-    message = `<strong>${getText("greatEffort")}</strong> ${getText(
-      "greatEffortMsg"
-    )}`;
+    if (percentage >= 90) {
+      emoji = "🏆";
+      message = `<strong>${getText("outstanding")}</strong> ${getText(
+        "outstandingMsg"
+      )}`;
+    } else if (percentage >= 70) {
+      emoji = "🌟";
+      message = `<strong>${getText("excellent")}</strong> ${getText(
+        "excellentMsg"
+      )}`;
+    } else {
+      emoji = "👍";
+      message = `<strong>${getText("goodJob")}</strong> ${getText(
+        "goodJobMsg"
+      )}`;
+    }
   }
 
   document.getElementById("resultsEmoji").textContent = emoji;
