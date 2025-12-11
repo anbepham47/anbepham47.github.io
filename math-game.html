@@ -4,578 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Math Speed Game</title>
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
-      body {
-        font-family: "Comic Sans MS", "Arial", sans-serif;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 20px;
-      }
-
-      .game-container {
-        background: white;
-        border-radius: 20px;
-        padding: 40px;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        max-width: 700px;
-        width: 70%;
-        text-align: center;
-      }
-
-      h1 {
-        color: #667eea;
-        margin-bottom: 30px;
-        font-size: 2.5em;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-      }
-
-      .stats {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 10px;
-        flex-wrap: wrap;
-        gap: 15px;
-      }
-
-      .stat-box {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 15px 25px;
-        border-radius: 10px;
-        min-width: 120px;
-        flex: 0 0 auto;
-      }
-
-      .stat-label {
-        font-size: 0.9em;
-        opacity: 0.9;
-      }
-
-      .stat-value {
-        font-size: 1.8em;
-        font-weight: bold;
-        margin-top: 5px;
-      }
-
-      .question-area {
-        background: #f8f9fa;
-        padding: 30px;
-        border-radius: 15px;
-        margin-bottom: 30px;
-      }
-
-      .question {
-        font-size: 3em;
-        color: #333;
-        margin-bottom: 20px;
-        font-weight: bold;
-      }
-
-      .input-area {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-      }
-
-      input[type="number"] {
-        font-size: 2em;
-        padding: 15px;
-        border: 3px solid #667eea;
-        border-radius: 10px;
-        text-align: center;
-        width: 100%;
-      }
-
-      input[type="number"]:focus {
-        outline: none;
-        border-color: #764ba2;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
-      }
-
-      button {
-        font-size: 1.3em;
-        padding: 15px 30px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border: none;
-        border-radius: 10px;
-        cursor: pointer;
-        font-weight: bold;
-        transition: transform 0.2s, box-shadow 0.2s;
-      }
-
-      button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-      }
-
-      button:active {
-        transform: translateY(0);
-      }
-
-      .feedback {
-        font-size: 1.5em;
-        font-weight: bold;
-        min-height: 40px;
-        transition: all 0.3s;
-      }
-
-      .feedback.correct {
-        color: #28a745;
-        animation: bounce 0.5s;
-      }
-
-      .feedback.incorrect {
-        color: #dc3545;
-        animation: shake 0.5s;
-      }
-
-      @keyframes bounce {
-        0%,
-        100% {
-          transform: translateY(0);
-        }
-        50% {
-          transform: translateY(-10px);
-        }
-      }
-
-      @keyframes shake {
-        0%,
-        100% {
-          transform: translateX(0);
-        }
-        25% {
-          transform: translateX(-10px);
-        }
-        75% {
-          transform: translateX(10px);
-        }
-      }
-
-      .start-screen,
-      .game-screen {
-        display: none;
-      }
-
-      .start-screen.active,
-      .game-screen.active {
-        display: block;
-      }
-
-      .leaderboard-screen {
-        display: none;
-      }
-
-      .leaderboard-screen.active {
-        display: block;
-      }
-
-      .instructions {
-        text-align: left;
-        background: #f8f9fa;
-        padding: 20px;
-        border-radius: 10px;
-        margin-bottom: 20px;
-      }
-
-      .instructions h2 {
-        color: #667eea;
-        margin-bottom: 15px;
-      }
-
-      .instructions ul {
-        margin-left: 20px;
-        line-height: 1.8;
-      }
-
-      .time-bonus {
-        font-size: 0.9em;
-        color: #666;
-        margin-top: 10px;
-      }
-
-      .results-screen {
-        display: none;
-      }
-
-      .results-screen.active {
-        display: block;
-      }
-
-      .results-container {
-        background: #f8f9fa;
-        padding: 30px;
-        border-radius: 15px;
-        margin-bottom: 30px;
-      }
-
-      .results-title {
-        font-size: 2.5em;
-        margin-bottom: 20px;
-      }
-
-      .results-stats {
-        font-size: 1.3em;
-        line-height: 2;
-        margin-bottom: 20px;
-      }
-
-      .percentage {
-        font-size: 3em;
-        font-weight: bold;
-        margin: 20px 0;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-      }
-
-      .feedback-message {
-        font-size: 1.5em;
-        line-height: 1.6;
-        color: #333;
-        margin: 20px 0;
-        padding: 20px;
-        background: white;
-        border-radius: 10px;
-        border-left: 5px solid #667eea;
-      }
-
-      .progress-indicator {
-        font-size: 1.1em;
-        color: #667eea;
-        font-weight: bold;
-        margin-bottom: 15px;
-      }
-
-      .number-keyboard {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
-        margin-top: 20px;
-      }
-
-      .keyboard-container {
-        display: flex;
-        gap: 15px;
-        justify-content: center;
-        align-items: stretch;
-      }
-
-      .num-key {
-        font-size: 1.8em;
-        padding: 20px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border: none;
-        border-radius: 10px;
-        cursor: pointer;
-        font-weight: bold;
-        transition: all 0.2s;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      }
-
-      .num-key:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 12px rgba(102, 126, 234, 0.4);
-      }
-
-      .num-key:active {
-        transform: translateY(0);
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-      }
-
-      .num-key.zero {
-        grid-column: 1 / 3;
-      }
-
-      .num-key.backspace {
-        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
-        font-size: 1.5em;
-      }
-
-      .num-key.backspace:hover {
-        box-shadow: 0 6px 12px rgba(220, 53, 69, 0.4);
-      }
-
-      .submit-btn {
-        background: linear-gradient(135deg, #28a745 0%, #218838 100%);
-        font-size: 1.5em;
-        padding: 20px 25px;
-        min-width: 70px;
-        margin-top: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        writing-mode: horizontal-tb;
-        white-space: nowrap;
-      }
-
-      .submit-btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 12px rgba(40, 167, 69, 0.4);
-      }
-
-      .leaderboard {
-        background: #f8f9fa;
-        padding: 20px;
-        border-radius: 10px;
-        margin-top: 20px;
-        text-align: left;
-      }
-
-      .leaderboard h3 {
-        color: #667eea;
-        margin-bottom: 15px;
-        text-align: center;
-        font-size: 1.5em;
-      }
-
-      .leaderboard-list {
-        list-style: none;
-        padding: 0;
-      }
-
-      .leaderboard-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px 15px;
-        margin-bottom: 8px;
-        background: white;
-        border-radius: 8px;
-        border-left: 4px solid #667eea;
-        transition: transform 0.2s;
-      }
-
-      .leaderboard-item:hover {
-        transform: translateX(5px);
-      }
-
-      .leaderboard-rank {
-        font-weight: bold;
-        color: #667eea;
-        min-width: 30px;
-      }
-
-      .leaderboard-info {
-        flex: 1;
-        margin: 0 15px;
-      }
-
-      .leaderboard-score {
-        font-weight: bold;
-        color: #28a745;
-        font-size: 1.1em;
-      }
-
-      .leaderboard-details {
-        font-size: 0.85em;
-        color: #666;
-        margin-top: 3px;
-      }
-
-      .leaderboard-item.top1 {
-        border-left-color: #ffd700;
-        background: linear-gradient(135deg, #fff9e6 0%, #ffffff 100%);
-      }
-
-      .leaderboard-item.top1 .leaderboard-rank {
-        color: #ffd700;
-      }
-
-      .leaderboard-item.top2 {
-        border-left-color: #c0c0c0;
-      }
-
-      .leaderboard-item.top3 {
-        border-left-color: #cd7f32;
-      }
-
-      .clear-leaderboard {
-        margin-top: 10px;
-        font-size: 0.9em;
-        padding: 8px 15px;
-        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
-      }
-
-      .no-scores {
-        text-align: center;
-        color: #999;
-        font-style: italic;
-        padding: 20px;
-      }
-
-      .button-group {
-        display: flex;
-        gap: 10px;
-        margin-top: 15px;
-        flex-wrap: wrap;
-        justify-content: center;
-      }
-
-      .button-group button {
-        flex: 1;
-        min-width: 140px;
-      }
-
-      .mode-screen {
-        display: none;
-      }
-
-      .mode-screen.active {
-        display: block;
-      }
-
-      .mode-selection {
-        background: #f8f9fa;
-        padding: 25px;
-        border-radius: 15px;
-        margin-bottom: 20px;
-      }
-
-      .mode-selection h2 {
-        color: #667eea;
-        margin-bottom: 20px;
-        font-size: 1.8em;
-      }
-
-      .mode-buttons {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-      }
-
-      .mode-btn {
-        padding: 20px;
-        font-size: 1.2em;
-        text-align: left;
-        background: white;
-        border: 3px solid #667eea;
-        color: #667eea;
-        border-radius: 10px;
-        cursor: pointer;
-        transition: all 0.3s;
-      }
-
-      .mode-btn:hover {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        transform: translateY(-2px);
-      }
-
-      .mode-btn .mode-title {
-        font-weight: bold;
-        font-size: 1.1em;
-        margin-bottom: 8px;
-      }
-
-      .mode-btn .mode-desc {
-        font-size: 0.85em;
-        opacity: 0.9;
-      }
-
-      .number-selector {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 10px;
-        margin-top: 15px;
-      }
-
-      .number-btn {
-        padding: 15px;
-        font-size: 1.3em;
-        background: white;
-        border: 2px solid #667eea;
-        color: #667eea;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: bold;
-        transition: all 0.2s;
-      }
-
-      .number-btn:hover {
-        background: #667eea;
-        color: white;
-      }
-
-      .mode-info {
-        background: white;
-        padding: 15px;
-        border-radius: 8px;
-        margin-top: 15px;
-        border-left: 4px solid #667eea;
-      }
-
-      .language-selector {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        display: flex;
-        gap: 10px;
-        z-index: 1000;
-      }
-
-      .lang-btn {
-        padding: 8px 15px;
-        font-size: 0.9em;
-        background: white;
-        border: 2px solid #667eea;
-        color: #667eea;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: bold;
-        transition: all 0.2s;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      }
-
-      .lang-btn:hover {
-        background: #667eea;
-        color: white;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
-      }
-
-      .lang-btn.active {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border-color: #764ba2;
-      }
-
-      .edit-name-btn {
-        position: fixed;
-        top: 20px;
-        left: 20px;
-        padding: 8px 15px;
-        font-size: 0.9em;
-        background: white;
-        border: 2px solid #667eea;
-        color: #667eea;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: bold;
-        transition: all 0.2s;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        z-index: 1000;
-      }
-
-      .edit-name-btn:hover {
-        background: #667eea;
-        color: white;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
-      }
-    </style>
+    <link rel="stylesheet" href="math-game.css" />
   </head>
   <body>
     <!-- Edit Name Button -->
@@ -594,12 +23,11 @@
     </div>
 
     <div class="game-container">
-      <h1>Welcome 🦄 to the</h1>
-      <h1>Math Speed Game</h1>
-
       <!-- Start Screen -->
       <div class="start-screen active">
         <div class="instructions">
+          <h1>Welcome 🦄 to the</h1>
+          <h1>Math Speed Game</h1>
           <h2>🎯 How to Play:</h2>
           <ul>
             <li>Each game set has 15 questions</li>
@@ -701,47 +129,144 @@
 
       <!-- Game Screen -->
       <div class="game-screen">
-        <div class="progress-indicator" id="progress">Question 1 of 10</div>
+        <div
+          class="progress-indicator"
+          id="progress"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          Question 1 of 10
+        </div>
         <div class="stats">
           <div class="stat-box">
             <div class="stat-label">Score</div>
-            <div class="stat-value" id="score">0</div>
+            <div class="stat-value" id="score" aria-live="polite">0</div>
           </div>
           <div class="stat-box">
             <div class="stat-label">Correct</div>
-            <div class="stat-value" id="correct">0</div>
+            <div class="stat-value" id="correct" aria-live="polite">0</div>
           </div>
           <div class="stat-box">
             <div class="stat-label">Total</div>
-            <div class="stat-value" id="total">0</div>
+            <div class="stat-value" id="total" aria-live="polite">0</div>
           </div>
         </div>
 
         <div class="question-area">
-          <div class="question" id="question">2 × 3 = ?</div>
-          <div class="time-bonus" id="timer">Time: 0.0s</div>
+          <div
+            class="question"
+            id="question"
+            role="heading"
+            aria-level="2"
+            aria-live="polite"
+          >
+            2 × 3 = ?
+          </div>
+          <div
+            class="time-bonus"
+            id="timer"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            Time: 0.0s
+          </div>
           <div class="input-area">
             <input
               type="number"
               id="answer"
               placeholder="Your answer"
+              aria-label="Answer input field"
+              aria-describedby="question"
               autofocus
               readonly
             />
-            <div class="feedback" id="feedback"></div>
+            <div
+              class="feedback"
+              id="feedback"
+              aria-live="assertive"
+              aria-atomic="true"
+            ></div>
             <div class="keyboard-container">
-              <div class="number-keyboard">
-                <button class="num-key" onclick="inputNumber(1)">1</button>
-                <button class="num-key" onclick="inputNumber(2)">2</button>
-                <button class="num-key" onclick="inputNumber(3)">3</button>
-                <button class="num-key" onclick="inputNumber(4)">4</button>
-                <button class="num-key" onclick="inputNumber(5)">5</button>
-                <button class="num-key" onclick="inputNumber(6)">6</button>
-                <button class="num-key" onclick="inputNumber(7)">7</button>
-                <button class="num-key" onclick="inputNumber(8)">8</button>
-                <button class="num-key" onclick="inputNumber(9)">9</button>
-                <button class="num-key zero" onclick="inputNumber(0)">0</button>
-                <button class="num-key backspace" onclick="backspace()">
+              <div
+                class="number-keyboard"
+                role="group"
+                aria-label="Number input keyboard"
+              >
+                <button
+                  class="num-key"
+                  onclick="inputNumber(1)"
+                  aria-label="Number 1"
+                >
+                  1
+                </button>
+                <button
+                  class="num-key"
+                  onclick="inputNumber(2)"
+                  aria-label="Number 2"
+                >
+                  2
+                </button>
+                <button
+                  class="num-key"
+                  onclick="inputNumber(3)"
+                  aria-label="Number 3"
+                >
+                  3
+                </button>
+                <button
+                  class="num-key"
+                  onclick="inputNumber(4)"
+                  aria-label="Number 4"
+                >
+                  4
+                </button>
+                <button
+                  class="num-key"
+                  onclick="inputNumber(5)"
+                  aria-label="Number 5"
+                >
+                  5
+                </button>
+                <button
+                  class="num-key"
+                  onclick="inputNumber(6)"
+                  aria-label="Number 6"
+                >
+                  6
+                </button>
+                <button
+                  class="num-key"
+                  onclick="inputNumber(7)"
+                  aria-label="Number 7"
+                >
+                  7
+                </button>
+                <button
+                  class="num-key"
+                  onclick="inputNumber(8)"
+                  aria-label="Number 8"
+                >
+                  8
+                </button>
+                <button
+                  class="num-key"
+                  onclick="inputNumber(9)"
+                  aria-label="Number 9"
+                >
+                  9
+                </button>
+                <button
+                  class="num-key zero"
+                  onclick="inputNumber(0)"
+                  aria-label="Number 0"
+                >
+                  0
+                </button>
+                <button
+                  class="num-key backspace"
+                  onclick="backspace()"
+                  aria-label="Backspace"
+                >
                   ⌫
                 </button>
               </div>
@@ -816,681 +341,6 @@
       </div>
     </div>
 
-    <script>
-      // Language data
-      let currentLanguage = localStorage.getItem("mathGameLanguage") || "vi";
-
-      const translations = {
-        en: {
-          title1: "Welcome 🦄 to the",
-          title2: "Math Speed Game",
-          howToPlay: "🎯 How to Play:",
-          instructions: [
-            "Each game set has 15 questions",
-            "Choose your mode: multiplication/division or addition/subtraction",
-            "Numbers will be between 2 and 9",
-            "Answer as quickly as you can!",
-            "Faster answers = More points!",
-            "Get bonus points for speed:",
-            "Under 3 seconds: 100 points",
-            "Under 5 seconds: 50 points",
-            "Under 10 seconds: 25 points",
-            "Over 10 seconds: 10 points",
-            "Complete the set to see your results and feedback!",
-          ],
-          startGame: "Start Game!",
-          viewLeaderboard: "View Leaderboard",
-          developedBy: "Special developed by Chiêu Quân's daddy",
-          selectMode: "🎮 Select Game Mode",
-          addSubMode: "➕➖ Addition & Subtraction Mode",
-          addSubDesc: "Random + and - with numbers (2-9)",
-          multDivMode: "✖➗ Multiplication & Division Mode",
-          multDivDesc: "Random x and ÷ with numbers (2-9)",
-          practiceMode: "🎯 Multiplication & Division Practice Mode",
-          practiceDesc: "Choose a specific number to practice (2-9)",
-          selectNumber: "Select number to practice:",
-          backToMenu: "Back to Menu",
-          question: "Question",
-          of: "of",
-          score: "Score",
-          correct: "Correct",
-          total: "Total",
-          time: "Time",
-          yourAnswer: "Your answer",
-          enter: "Enter",
-          newGame: "New Game",
-          backToMenuGame: "Back to Menu",
-          playAnother: "Play Another Set!",
-          leaderboardTitle: "🏆 Leaderboard - Top 10",
-          noScores: "No scores yet. Play your first game!",
-          clearLeaderboard: "Clear Leaderboard",
-          clearConfirm: "Are you sure you want to clear the leaderboard?",
-          correctFeedback: "🎉 Correct!",
-          incorrectFeedback: "❌ Oops! The answer was",
-          points: "points!",
-          outstanding: "Outstanding!",
-          outstandingMsg:
-            "You're a math superstar! Your speed and accuracy are incredible. Keep up the amazing work!",
-          excellent: "Excellent work!",
-          excellentMsg:
-            "You did really well! With a bit more practice, you'll be perfect. Keep going!",
-          goodJob: "Good job!",
-          goodJobMsg:
-            "You're doing great! Try to answer a bit faster next time to earn more points.",
-          keepPracticing: "Keep practicing!",
-          keepPracticingMsg:
-            "You're getting better! Focus on accuracy first, then work on your speed.",
-          greatEffort: "Great effort!",
-          greatEffortMsg:
-            "Everyone starts somewhere! Take your time and practice more. You'll improve with each game!",
-          scoreLabel: "Score:",
-          correctLabel: "Correct:",
-          playerName: "Player",
-          editName: "Edit Name",
-          enterName: "Enter your name:",
-          save: "Save",
-          cancel: "Cancel",
-        },
-        vi: {
-          title1: "Chào mừng 🦄 đến với",
-          title2: "Trò Chơi Toán Nhanh",
-          howToPlay: "🎯 Cách Chơi:",
-          instructions: [
-            "Mỗi ván có 15 câu hỏi",
-            "Chọn chế độ: nhân/chia hoặc cộng/trừ",
-            "Các số từ 2 đến 9",
-            "Trả lời càng nhanh càng tốt!",
-            "Trả lời nhanh = Điểm cao hơn!",
-            "Điểm thưởng theo tốc độ:",
-            "Dưới 3 giây: 100 điểm",
-            "Dưới 5 giây: 50 điểm",
-            "Dưới 10 giây: 25 điểm",
-            "Trên 10 giây: 10 điểm",
-            "Hoàn thành để xem kết quả và phản hồi!",
-          ],
-          startGame: "Bắt Đầu Chơi!",
-          viewLeaderboard: "Xem Bảng Xếp Hạng",
-          developedBy: "Đặc biệt phát triển bởi Ba của Chiêu Quân",
-          selectMode: "🎮 Chọn Chế Độ Chơi",
-          addSubMode: "➕➖ Chế Độ Cộng & Trừ",
-          addSubDesc: "Ngẫu nhiên + và - với số (2-9)",
-          multDivMode: "✖➗ Chế Độ Nhân & Chia",
-          multDivDesc: "Ngẫu nhiên x và ÷ với số (2-9)",
-          practiceMode: "🎯 Chế Độ Luyện Tập Nhân & Chia",
-          practiceDesc: "Chọn một số cụ thể để luyện tập (2-9)",
-          selectNumber: "Chọn số để luyện tập:",
-          backToMenu: "Về Menu",
-          question: "Câu",
-          of: "trên",
-          score: "Điểm",
-          correct: "Đúng",
-          total: "Tổng",
-          time: "Thời gian",
-          yourAnswer: "Câu trả lời",
-          enter: "Nhập",
-          newGame: "Ván Mới",
-          backToMenuGame: "Về Menu",
-          playAnother: "Chơi Tiếp!",
-          leaderboardTitle: "🏆 Bảng Xếp Hạng - Top 10",
-          noScores: "Chưa có điểm nào. Chơi ván đầu tiên!",
-          clearLeaderboard: "Xóa Bảng Xếp Hạng",
-          clearConfirm: "Bạn có chắc muốn xóa bảng xếp hạng?",
-          correctFeedback: "🎉 Chính xác!",
-          incorrectFeedback: "❌ Ối! Đáp án là",
-          points: "điểm!",
-          outstanding: "Xuất sắc!",
-          outstandingMsg:
-            "Con là ngôi sao toán học! Tốc độ và độ chính xác tuyệt vời. Tiếp tục phát huy nhé!",
-          excellent: "Làm tốt lắm!",
-          excellentMsg:
-            "Con làm rất tốt! Luyện tập thêm một chút nữa là hoàn hảo. Cố lên!",
-          goodJob: "Làm tốt!",
-          goodJobMsg:
-            "Con đang làm rất tốt! Lần sau thử trả lời nhanh hơn để được nhiều điểm hơn nhé.",
-          keepPracticing: "Tiếp tục luyện tập!",
-          keepPracticingMsg:
-            "Con đang tiến bộ! Tập trung vào độ chính xác trước, rồi sau đó tăng tốc độ.",
-          greatEffort: "Cố gắng tuyệt vời!",
-          greatEffortMsg:
-            "Ai cũng có lúc bắt đầu! Từ từ thôi và luyện tập nhiều hơn. Con sẽ tiến bộ sau mỗi ván chơi!",
-          scoreLabel: "Điểm:",
-          correctLabel: "Đúng:",
-          playerName: "Người chơi",
-          editName: "Đổi Tên",
-          enterName: "Nhập tên của bạn:",
-          save: "Lưu",
-          cancel: "Hủy",
-        },
-      };
-
-      let score = 0;
-      let correctAnswers = 0;
-      let totalQuestions = 0;
-      let currentAnswer = 0;
-      let startTime = 0;
-      let timerInterval = null;
-      let questionsInSet = 0;
-      let maxPossibleScore = 0;
-      let gameMode = "random";
-      let fixedNumber = null;
-      let playerName = localStorage.getItem("mathGamePlayerName") || "";
-
-      // Leaderboard functions
-      function saveScore(score, maxScore, correct, total, percentage) {
-        const scores = getLeaderboard();
-        const newScore = {
-          score: score,
-          maxScore: maxScore,
-          correct: correct,
-          total: total,
-          percentage: percentage,
-          date: new Date().toLocaleString(),
-          playerName: playerName || getText("playerName"),
-        };
-
-        scores.unshift(newScore); // Add to beginning
-
-        // Keep only top 10
-        if (scores.length > 10) {
-          scores.pop();
-        }
-
-        localStorage.setItem("mathGameLeaderboard", JSON.stringify(scores));
-        displayLeaderboard();
-      }
-
-      function getLeaderboard() {
-        const stored = localStorage.getItem("mathGameLeaderboard");
-        return stored ? JSON.parse(stored) : [];
-      }
-
-      function displayLeaderboard() {
-        const scores = getLeaderboard();
-        const list = document.getElementById("leaderboardList");
-        const clearBtn = document.getElementById("clearBtn");
-
-        if (scores.length === 0) {
-          list.innerHTML = `<li class="no-scores">${getText("noScores")}</li>`;
-          clearBtn.style.display = "none";
-          return;
-        }
-
-        clearBtn.style.display = "block";
-
-        list.innerHTML = scores
-          .map((item, index) => {
-            const rank = index + 1;
-            let rankClass = "";
-            let medal = "";
-
-            if (rank === 1) {
-              rankClass = "top1";
-              medal = "🥇 ";
-            } else if (rank === 2) {
-              rankClass = "top2";
-              medal = "🥈 ";
-            } else if (rank === 3) {
-              rankClass = "top3";
-              medal = "🥉 ";
-            }
-
-            const displayName = item.playerName || getText("playerName");
-            return `
-            <li class="leaderboard-item ${rankClass}">
-              <span class="leaderboard-rank">${medal}#${rank}</span>
-              <div class="leaderboard-info">
-                <div class="leaderboard-score">${displayName}: ${item.score} / ${item.maxScore} (${item.percentage}%)</div>
-                <div class="leaderboard-details">${item.correct}/${item.total} correct • ${item.date}</div>
-              </div>
-            </li>
-          `;
-          })
-          .join("");
-      }
-
-      function clearLeaderboard() {
-        if (confirm(translations[currentLanguage].clearConfirm)) {
-          localStorage.removeItem("mathGameLeaderboard");
-          displayLeaderboard();
-        }
-      }
-
-      function switchLanguage(lang) {
-        currentLanguage = lang;
-        localStorage.setItem("mathGameLanguage", lang);
-        updateAllText();
-        updateLanguageButtons();
-      }
-
-      function updateLanguageButtons() {
-        document
-          .getElementById("langEn")
-          .classList.toggle("active", currentLanguage === "en");
-        document
-          .getElementById("langVi")
-          .classList.toggle("active", currentLanguage === "vi");
-      }
-
-      function editPlayerName() {
-        const newName = prompt(getText("enterName"), playerName || "");
-        if (newName !== null && newName.trim() !== "") {
-          playerName = newName.trim();
-          localStorage.setItem("mathGamePlayerName", playerName);
-          updatePlayerNameDisplay();
-        }
-      }
-
-      function updatePlayerNameDisplay() {
-        const displayName = playerName || getText("playerName");
-        const titleElement = document.querySelectorAll("h1")[0];
-        if (playerName) {
-          titleElement.textContent = getText("title1").replace(
-            "🦄",
-            displayName
-          );
-        } else {
-          editPlayerName();
-        }
-      }
-
-      function getText(key) {
-        return translations[currentLanguage][key] || key;
-      }
-
-      function updateAllText() {
-        // Update title with player name
-        updatePlayerNameDisplay();
-        document.querySelectorAll("h1")[1].textContent = getText("title2");
-
-        // Update instructions
-        const instructionsTitle = document.querySelector(".instructions h2");
-        if (instructionsTitle) {
-          instructionsTitle.textContent = getText("howToPlay");
-        }
-
-        const instructionsList = document.querySelector(".instructions ul");
-        if (instructionsList) {
-          const instructions = getText("instructions");
-          instructionsList.innerHTML = instructions
-            .map((item, index) => {
-              if (index === 5) {
-                // "Get bonus points for speed:" with nested list
-                return `<li>${item}<ul>
-                  <li>${instructions[6]}</li>
-                  <li>${instructions[7]}</li>
-                  <li>${instructions[8]}</li>
-                  <li>${instructions[9]}</li>
-                </ul></li>`;
-              } else if (index > 5 && index < 10) {
-                return ""; // Skip these as they're nested
-              }
-              return `<li>${item}</li>`;
-            })
-            .join("");
-        }
-
-        // Update buttons on start screen
-        document.querySelectorAll(
-          ".start-screen .button-group button"
-        )[0].textContent = getText("startGame");
-        document.querySelectorAll(
-          ".start-screen .button-group button"
-        )[1].textContent = getText("viewLeaderboard");
-
-        document.querySelectorAll(".instructions h2")[1].textContent =
-          getText("developedBy");
-
-        // Update mode selection
-        document.querySelector(".mode-selection h2").textContent =
-          getText("selectMode");
-
-        const modeButtons = document.querySelectorAll(".mode-btn");
-        if (modeButtons[0]) {
-          modeButtons[0].querySelector(".mode-title").textContent =
-            getText("addSubMode");
-          modeButtons[0].querySelector(".mode-desc").textContent =
-            getText("addSubDesc");
-        }
-        if (modeButtons[1]) {
-          modeButtons[1].querySelector(".mode-title").textContent =
-            getText("multDivMode");
-          modeButtons[1].querySelector(".mode-desc").textContent =
-            getText("multDivDesc");
-        }
-        if (modeButtons[2]) {
-          modeButtons[2].querySelector(".mode-title").textContent =
-            getText("practiceMode");
-          modeButtons[2].querySelector(".mode-desc").textContent =
-            getText("practiceDesc");
-        }
-
-        document.querySelector("#fixedModeSelector h3").textContent =
-          getText("selectNumber");
-
-        // Update stat labels
-        document.querySelectorAll(".stat-label")[0].textContent =
-          getText("score");
-        document.querySelectorAll(".stat-label")[1].textContent =
-          getText("correct");
-        document.querySelectorAll(".stat-label")[2].textContent =
-          getText("total");
-
-        // Update input placeholder
-        document.getElementById("answer").placeholder = getText("yourAnswer");
-
-        // Update submit button
-        document.querySelector(".submit-btn").textContent = getText("enter");
-
-        // Update game screen buttons
-        document.querySelector(".game-screen > button").textContent =
-          getText("newGame");
-        document.querySelectorAll(".game-screen > button")[1].textContent =
-          getText("backToMenuGame");
-
-        // Update results screen buttons
-        const resultsButtons = document.querySelectorAll(
-          ".results-screen .button-group button"
-        );
-        if (resultsButtons[0]) {
-          resultsButtons[0].textContent = getText("playAnother");
-        }
-        if (resultsButtons[1]) {
-          resultsButtons[1].textContent = getText("viewLeaderboard");
-        }
-
-        // Update back to menu buttons
-        document
-          .querySelectorAll('button[onclick="backToStart()"]')
-          .forEach((btn) => {
-            btn.textContent = getText("backToMenu");
-          });
-
-        // Update leaderboard
-        document.querySelector(".leaderboard h3").textContent =
-          getText("leaderboardTitle");
-        document.querySelector(".clear-leaderboard").textContent =
-          getText("clearLeaderboard");
-
-        // Update edit name button
-        document.getElementById("editNameText").textContent =
-          getText("editName");
-
-        // Update progress if in game
-        if (totalQuestions < questionsInSet) {
-          updateProgress();
-        }
-
-        // Refresh leaderboard display
-        displayLeaderboard();
-      }
-
-      function inputNumber(num) {
-        const answerInput = document.getElementById("answer");
-        const currentValue = answerInput.value;
-        answerInput.value = currentValue + num;
-      }
-
-      function backspace() {
-        const answerInput = document.getElementById("answer");
-        answerInput.value = answerInput.value.slice(0, -1);
-      }
-
-      function showModeSelection() {
-        document.querySelector(".start-screen").classList.remove("active");
-        document.querySelector(".mode-screen").classList.add("active");
-      }
-
-      function showFixedModeSelection() {
-        document.getElementById("fixedModeSelector").style.display = "block";
-      }
-
-      function startGame(mode = "random", fixedNum = null) {
-        gameMode = mode;
-        fixedNumber = fixedNum;
-
-        document.querySelector(".start-screen").classList.remove("active");
-        document.querySelector(".mode-screen").classList.remove("active");
-        document.querySelector(".results-screen").classList.remove("active");
-        document.querySelector(".game-screen").classList.add("active");
-        resetGame();
-      }
-
-      function backToStart() {
-        document.querySelector(".results-screen").classList.remove("active");
-        document
-          .querySelector(".leaderboard-screen")
-          .classList.remove("active");
-        document.querySelector(".mode-screen").classList.remove("active");
-        document.querySelector(".game-screen").classList.remove("active");
-        document.querySelector(".start-screen").classList.add("active");
-        document.getElementById("fixedModeSelector").style.display = "none";
-      }
-
-      function showLeaderboard() {
-        document.querySelector(".start-screen").classList.remove("active");
-        document.querySelector(".results-screen").classList.remove("active");
-        document.querySelector(".leaderboard-screen").classList.add("active");
-        displayLeaderboard();
-      }
-
-      function resetGame() {
-        score = 0;
-        correctAnswers = 0;
-        totalQuestions = 0;
-        questionsInSet = 15; // Fixed 15 questions
-        maxPossibleScore = 0;
-        updateStats();
-        updateProgress();
-        generateQuestion();
-      }
-
-      function updateProgress() {
-        document.getElementById("progress").textContent = `${getText(
-          "question"
-        )} ${totalQuestions + 1} ${getText("of")} ${questionsInSet}`;
-      }
-
-      function generateQuestion() {
-        // Clear feedback and input
-        document.getElementById("feedback").textContent = "";
-        document.getElementById("feedback").className = "feedback";
-        document.getElementById("answer").value = "";
-        document.getElementById("answer").focus();
-
-        // Generate random numbers between 2 and 9
-        let num1, num2;
-
-        if (gameMode === "fixed" && fixedNumber) {
-          // Fixed mode: second operand is always the fixed number
-          num1 = Math.floor(Math.random() * 8) + 2;
-          num2 = fixedNumber;
-        } else {
-          // Random mode: both numbers are random
-          num1 = Math.floor(Math.random() * 8) + 2;
-          num2 = Math.floor(Math.random() * 8) + 2;
-        }
-
-        // Choose operations based on game mode
-        let operations, operation;
-        if (gameMode === "addsub") {
-          // Addition and subtraction mode
-          operations = ["+", "-"];
-        } else {
-          // Default multiplication and division mode
-          operations = ["×", "÷"];
-        }
-        operation = operations[Math.floor(Math.random() * operations.length)];
-
-        let questionText = "";
-
-        if (operation === "×") {
-          currentAnswer = num1 * num2;
-          questionText = `${num1} × ${num2} = ?`;
-        } else if (operation === "÷") {
-          // For division, ensure we get a whole number result
-          currentAnswer = num1;
-          const dividend = num2 * num1;
-          questionText = `${dividend} ÷ ${num2} = ?`;
-        } else if (operation === "+") {
-          currentAnswer = num1 + num2;
-          questionText = `${num1} + ${num2} = ?`;
-        } else if (operation === "-") {
-          currentAnswer = num1;
-          const subtrahend = num2 + num1;
-          questionText = `${subtrahend} - ${num2} = ?`;
-        }
-
-        document.getElementById("question").textContent = questionText;
-
-        // Track maximum possible score (if answered within 3 seconds)
-        maxPossibleScore += 100;
-
-        // Start timer
-        startTime = Date.now();
-        if (timerInterval) clearInterval(timerInterval);
-        timerInterval = setInterval(updateTimer, 100);
-      }
-
-      function updateTimer() {
-        const elapsed = (Date.now() - startTime) / 1000;
-        document.getElementById("timer").textContent = `${getText(
-          "time"
-        )}: ${elapsed.toFixed(1)}s`;
-      }
-
-      function checkAnswer() {
-        const userAnswer = parseInt(document.getElementById("answer").value);
-
-        if (isNaN(userAnswer)) {
-          return;
-        }
-
-        // Stop timer
-        clearInterval(timerInterval);
-        const timeTaken = (Date.now() - startTime) / 1000;
-
-        totalQuestions++;
-        const feedback = document.getElementById("feedback");
-
-        if (userAnswer === currentAnswer) {
-          correctAnswers++;
-
-          // Calculate points based on speed
-          let points = 10;
-          if (timeTaken < 3) {
-            points = 100;
-          } else if (timeTaken < 5) {
-            points = 50;
-          } else if (timeTaken < 10) {
-            points = 25;
-          }
-
-          score += points;
-
-          feedback.textContent = `${getText(
-            "correctFeedback"
-          )} +${points} ${getText("points")} (${timeTaken.toFixed(1)}s)`;
-          feedback.className = "feedback correct";
-        } else {
-          feedback.textContent = `${getText(
-            "incorrectFeedback"
-          )} ${currentAnswer}`;
-          feedback.className = "feedback incorrect";
-        }
-
-        updateStats();
-        updateProgress();
-
-        // Check if game set is complete
-        if (totalQuestions >= questionsInSet) {
-          setTimeout(showResults, 2000);
-        } else {
-          // Generate next question after a short delay
-          setTimeout(generateQuestion, 2000);
-        }
-      }
-
-      function showResults() {
-        clearInterval(timerInterval);
-        document.querySelector(".game-screen").classList.remove("active");
-        document.querySelector(".results-screen").classList.add("active");
-
-        const percentage = Math.round((score / maxPossibleScore) * 100);
-        const accuracy = Math.round((correctAnswers / totalQuestions) * 100);
-
-        // Save to leaderboard
-        saveScore(
-          score,
-          maxPossibleScore,
-          correctAnswers,
-          totalQuestions,
-          percentage
-        );
-
-        document.getElementById("percentage").textContent = `${percentage}%`;
-        document.getElementById("resultsStats").innerHTML =
-          `📊 <strong>${getText(
-            "scoreLabel"
-          )}</strong> ${score} / ${maxPossibleScore}<br>` +
-          `✅ <strong>${getText(
-            "correctLabel"
-          )}</strong> ${correctAnswers} / ${totalQuestions} (${accuracy}%)`;
-
-        // Determine feedback based on percentage
-        let emoji, message;
-        if (percentage >= 99) {
-          emoji = "🏆";
-          message = `<strong>${getText("outstanding")}</strong> ${getText(
-            "outstandingMsg"
-          )}`;
-        } else if (percentage >= 90) {
-          emoji = "🌟";
-          message = `<strong>${getText("excellent")}</strong> ${getText(
-            "excellentMsg"
-          )}`;
-        } else if (percentage >= 80) {
-          emoji = "👍";
-          message = `<strong>${getText("goodJob")}</strong> ${getText(
-            "goodJobMsg"
-          )}`;
-        } else if (percentage >= 70) {
-          emoji = "💪";
-          message = `<strong>${getText("keepPracticing")}</strong> ${getText(
-            "keepPracticingMsg"
-          )}`;
-        } else {
-          emoji = "🌱";
-          message = `<strong>${getText("greatEffort")}</strong> ${getText(
-            "greatEffortMsg"
-          )}`;
-        }
-
-        document.getElementById("resultsEmoji").textContent = emoji;
-        document.getElementById("feedbackMessage").innerHTML = message;
-      }
-
-      function updateStats() {
-        document.getElementById("score").textContent = score;
-        document.getElementById("correct").textContent = correctAnswers;
-        document.getElementById("total").textContent = totalQuestions;
-      }
-
-      // Focus management
-      document.addEventListener("DOMContentLoaded", function () {
-        // Keep focus visible but prevent physical keyboard input
-        document
-          .getElementById("answer")
-          .addEventListener("focus", function () {
-            this.setAttribute("readonly", "readonly");
-          });
-
-        // Load language and update text
-        updateAllText();
-        updateLanguageButtons();
-
-        // Load leaderboard on start
-        displayLeaderboard();
-      });
-    </script>
+    <script src="math-game.js"></script>
   </body>
 </html>
