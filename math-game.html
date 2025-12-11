@@ -818,7 +818,7 @@
 
     <script>
       // Language data
-      let currentLanguage = localStorage.getItem("mathGameLanguage") || "en";
+      let currentLanguage = localStorage.getItem("mathGameLanguage") || "vi";
 
       const translations = {
         en: {
@@ -1089,7 +1089,7 @@
             displayName
           );
         } else {
-          titleElement.textContent = getText("title1");
+          editPlayerName();
         }
       }
 
