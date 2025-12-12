@@ -459,6 +459,73 @@ button:active {
   padding: 20px;
 }
 
+/* History Board Styles */
+.history-board {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 20px;
+  text-align: left;
+}
+
+.history-board h3 {
+  color: #764ba2;
+  margin-bottom: 15px;
+  text-align: center;
+  font-size: 1.5em;
+}
+
+.history-list {
+  list-style: none;
+  padding: 0;
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  margin-bottom: 8px;
+  background: white;
+  border-radius: 8px;
+  border-left: 4px solid #764ba2;
+  transition: transform 0.2s;
+}
+
+.history-item:hover {
+  transform: translateX(5px);
+}
+
+.history-number {
+  font-weight: bold;
+  color: #764ba2;
+  min-width: 30px;
+}
+
+.history-info {
+  flex: 1;
+  margin: 0 15px;
+}
+
+.history-score {
+  font-weight: bold;
+  color: #667eea;
+  font-size: 1em;
+}
+
+.history-details {
+  font-size: 0.85em;
+  color: #666;
+  margin-top: 3px;
+}
+
+.clear-history {
+  margin-top: 10px;
+  font-size: 0.9em;
+  padding: 8px 15px;
+  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+}
+
 .button-group {
   display: flex;
   gap: 10px;

@@ -322,7 +322,7 @@
       <!-- Leaderboard Screen -->
       <div class="leaderboard-screen">
         <div class="leaderboard">
-          <h3>🏆 Leaderboard - Top 10</h3>
+          <h3>🏆 Leaderboard - Top 3</h3>
           <ul class="leaderboard-list" id="leaderboardList">
             <li class="no-scores">No scores yet. Play your first game!</li>
           </ul>
@@ -335,6 +335,24 @@
             Clear Leaderboard
           </button>
         </div>
+
+        <div class="history-board">
+          <h3>📜 Game History - Last 10 Games</h3>
+          <ul class="history-list" id="historyList">
+            <li class="no-scores">
+              No game history yet. Play your first game!
+            </li>
+          </ul>
+          <button
+            class="clear-history"
+            onclick="clearHistory()"
+            style="display: none"
+            id="clearHistoryBtn"
+          >
+            Clear History
+          </button>
+        </div>
+
         <button onclick="backToStart()" style="margin-top: 20px">
           Back to Menu
         </button>

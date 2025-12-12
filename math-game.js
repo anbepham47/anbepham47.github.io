@@ -44,10 +44,14 @@ const getTranslations = (lang) => {
       enter: "Enter",
       newGame: "New Game",
       playAnother: "Play Another Set!",
-      leaderboardTitle: "🏆 Leaderboard - Top 10",
+      leaderboardTitle: "🏆 Leaderboard - Top 3",
+      historyTitle: "📜 Game History - Last 10 Games",
       noScores: "No scores yet. Play your first game!",
+      noHistory: "No game history yet. Play your first game!",
       clearLeaderboard: "Clear Leaderboard",
+      clearHistory: "Clear History",
       clearConfirm: "Are you sure you want to clear the leaderboard?",
+      clearHistoryConfirm: "Are you sure you want to clear the history?",
       correctFeedback: "🎉 Correct!",
       incorrectFeedback: "❌ Oops! The answer was",
       points: "points!",
@@ -114,10 +118,14 @@ const getTranslations = (lang) => {
       enter: "Nhập",
       newGame: "Ván Mới",
       playAnother: "Chơi Tiếp!",
-      leaderboardTitle: "🏆 Bảng Xếp Hạng - Top 10",
+      leaderboardTitle: "🏆 Bảng Xếp Hạng - Top 3",
+      historyTitle: "📜 Lịch Sử Chơi - 10 Ván Gần Nhất",
       noScores: "Chưa có điểm nào. Chơi ván đầu tiên!",
+      noHistory: "Chưa có lịch sử. Chơi ván đầu tiên!",
       clearLeaderboard: "Xóa Bảng Xếp Hạng",
+      clearHistory: "Xóa Lịch Sử",
       clearConfirm: "Bạn có chắc muốn xóa bảng xếp hạng?",
+      clearHistoryConfirm: "Bạn có chắc muốn xóa lịch sử?",
       correctFeedback: "🎉 Chính xác!",
       incorrectFeedback: "❌ Ối! Đáp án là",
       points: "điểm!",
@@ -208,6 +216,10 @@ window.addEventListener("beforeunload", cleanup);
 // Leaderboard functions
 function saveScore(score, maxScore, correct, total, percentage) {
   try {
+    // Save to history first
+    saveToHistory(score, maxScore, correct, total, percentage);
+
+    // Then update leaderboard (top 3)
     const scores = getLeaderboard();
     const newScore = {
       score: score,
@@ -216,17 +228,23 @@ function saveScore(score, maxScore, correct, total, percentage) {
       total: total,
       percentage: percentage,
       date: new Date().toLocaleString(),
+      timestamp: Date.now(),
       playerName: playerName || getText("playerName"),
     };
 
-    scores.unshift(newScore); // Add to beginning
+    // Remove any existing scores with the same score value (keep latest)
+    const filteredScores = scores.filter((s) => s.score !== score);
 
-    // Keep only top 10
-    if (scores.length > 10) {
-      scores.pop();
-    }
+    // Add new score
+    filteredScores.unshift(newScore);
 
-    localStorage.setItem("mathGameLeaderboard", JSON.stringify(scores));
+    // Sort by score descending
+    filteredScores.sort((a, b) => b.score - a.score);
+
+    // Keep only top 3
+    const topScores = filteredScores.slice(0, 3);
+
+    localStorage.setItem("mathGameLeaderboard", JSON.stringify(topScores));
     displayLeaderboard();
   } catch (error) {
     console.error("Failed to save score:", error);
@@ -294,6 +312,91 @@ function clearLeaderboard() {
   if (confirm(currentTranslations.clearConfirm || getText("clearConfirm"))) {
     localStorage.removeItem("mathGameLeaderboard");
     displayLeaderboard();
+  }
+}
+
+// History board functions
+function saveToHistory(score, maxScore, correct, total, percentage) {
+  try {
+    const history = getHistory();
+    const newEntry = {
+      score: score,
+      maxScore: maxScore,
+      correct: correct,
+      total: total,
+      percentage: percentage,
+      date: new Date().toLocaleString(),
+      timestamp: Date.now(),
+      playerName: playerName || getText("playerName"),
+    };
+
+    history.unshift(newEntry); // Add to beginning
+
+    // Keep only last 10
+    if (history.length > 10) {
+      history.pop();
+    }
+
+    localStorage.setItem("mathGameHistory", JSON.stringify(history));
+    displayHistory();
+  } catch (error) {
+    console.error("Failed to save history:", error);
+  }
+}
+
+function getHistory() {
+  try {
+    const stored = localStorage.getItem("mathGameHistory");
+    return stored ? JSON.parse(stored) : [];
+  } catch (error) {
+    console.error("Failed to load history:", error);
+    return [];
+  }
+}
+
+function displayHistory() {
+  const history = getHistory();
+  const list = document.getElementById("historyList");
+  const clearBtn = document.getElementById("clearHistoryBtn");
+
+  if (!list) return; // Guard clause if element doesn't exist yet
+
+  if (history.length === 0) {
+    list.innerHTML = `<li class="no-scores">${getText("noHistory")}</li>`;
+    if (clearBtn) clearBtn.style.display = "none";
+    return;
+  }
+
+  if (clearBtn) clearBtn.style.display = "block";
+
+  list.innerHTML = history
+    .map((item, index) => {
+      const displayName = item.playerName || getText("playerName");
+      return `
+        <li class="history-item">
+          <span class="history-number">#${index + 1}</span>
+          <div class="history-info">
+            <div class="history-score">${displayName}: ${item.score} / ${
+        item.maxScore
+      } (${item.percentage}%)</div>
+            <div class="history-details">${item.correct}/${
+        item.total
+      } correct • ${item.date}</div>
+          </div>
+        </li>
+      `;
+    })
+    .join("");
+}
+
+function clearHistory() {
+  if (
+    confirm(
+      currentTranslations.clearHistoryConfirm || getText("clearHistoryConfirm")
+    )
+  ) {
+    localStorage.removeItem("mathGameHistory");
+    displayHistory();
   }
 }
 
@@ -447,6 +550,16 @@ function updateAllText() {
   document.querySelector(".clear-leaderboard").textContent =
     getText("clearLeaderboard");
 
+  // Update history board
+  const historyTitle = document.querySelector(".history-board h3");
+  if (historyTitle) {
+    historyTitle.textContent = getText("historyTitle");
+  }
+  const clearHistoryBtn = document.querySelector(".clear-history");
+  if (clearHistoryBtn) {
+    clearHistoryBtn.textContent = getText("clearHistory");
+  }
+
   // Update edit name button
   document.getElementById("editNameText").textContent = getText("editName");
 
@@ -455,8 +568,9 @@ function updateAllText() {
     updateProgress();
   }
 
-  // Refresh leaderboard display
+  // Refresh leaderboard and history display
   displayLeaderboard();
+  displayHistory();
 }
 
 function inputNumber(num) {
@@ -803,6 +917,7 @@ document.addEventListener("DOMContentLoaded", function () {
   updateAllText();
   updateLanguageButtons();
 
-  // Load leaderboard on start
+  // Load leaderboard and history on start
   displayLeaderboard();
+  displayHistory();
 });
