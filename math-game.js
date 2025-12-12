@@ -32,6 +32,8 @@ const getTranslations = (lang) => {
       multDivDesc: "Random x and ÷ with numbers (2-9)",
       practiceMode: "🎯 Multiplication & Division Practice",
       practiceDesc: "Choose a specific number to practice (2-9)",
+      geometryMode: "📐 Geometry: Perimeter & Area",
+      geometryDesc: "Calculate perimeter and area of rectangles & squares",
       selectNumber: "Select number to practice:",
       backToMenu: "Back to Menu",
       question: "Question",
@@ -106,6 +108,8 @@ const getTranslations = (lang) => {
       multDivDesc: "Ngẫu nhiên x và ÷ với số (2-9)",
       practiceMode: "🎯 Luyện Tập Nhân & Chia",
       practiceDesc: "Chọn một số cụ thể để luyện tập (2-9)",
+      geometryMode: "📐 Hình Học: Chu Vi & Diện Tích",
+      geometryDesc: "Tính chu vi và diện tích hình chữ nhật & hình vuông",
       selectNumber: "Chọn số để luyện tập:",
       backToMenu: "Về Menu",
       question: "Câu",
@@ -507,6 +511,12 @@ function updateAllText() {
     modeButtons[2].querySelector(".mode-desc").textContent =
       getText("practiceDesc");
   }
+  if (modeButtons[3]) {
+    modeButtons[3].querySelector(".mode-title").textContent =
+      getText("geometryMode");
+    modeButtons[3].querySelector(".mode-desc").textContent =
+      getText("geometryDesc");
+  }
 
   document.querySelector("#fixedModeSelector h3").textContent =
     getText("selectNumber");
@@ -681,7 +691,180 @@ function updateProgress() {
   } ${getText("of")} ${questionsInSet}`;
 }
 
+function generateGeometryQuestion() {
+  // Clear feedback and input
+  const feedbackEl = DOM.feedback || document.getElementById("feedback");
+  const answerEl = DOM.answer || document.getElementById("answer");
+  feedbackEl.textContent = "";
+  feedbackEl.className = "feedback";
+  answerEl.value = "";
+  answerEl.focus();
+
+  const questionEl = DOM.question || document.getElementById("question");
+  let questionText = "";
+
+  // Ngẫu nhiên chọn hình vuông hoặc hình chữ nhật
+  const isSquare = Math.random() < 0.5;
+  const shapePrefix =
+    currentLanguage === "vi"
+      ? isSquare
+        ? "Cho hình vuông: "
+        : "Cho hình chữ nhật: "
+      : isSquare
+      ? "Given a square: "
+      : "Given a rectangle: ";
+
+  if (isSquare) {
+    // Hình vuông: cạnh từ 2-9
+    const side = Math.floor(Math.random() * 8) + 2; // 2-9
+
+    // Chọn ngẫu nhiên tham số cần tìm
+    const params = [
+      {
+        type: "side",
+        question:
+          currentLanguage === "vi"
+            ? `Chu vi = ${4 * side}cm. Tìm cạnh?`
+            : `Perimeter = ${4 * side}cm. Find side?`,
+        answer: side,
+      },
+      {
+        type: "sideFromArea",
+        question:
+          currentLanguage === "vi"
+            ? `Diện tích = ${side * side}cm². Tìm cạnh?`
+            : `Area = ${side * side}cm². Find side?`,
+        answer: side,
+      },
+      {
+        type: "perimeter",
+        question:
+          currentLanguage === "vi"
+            ? `Cạnh = ${side}cm. Tìm chu vi?`
+            : `Side = ${side}cm. Find perimeter?`,
+        answer: 4 * side,
+      },
+      {
+        type: "semiPerimeter",
+        question:
+          currentLanguage === "vi"
+            ? `Cạnh = ${side}cm. Tìm nửa chu vi?`
+            : `Side = ${side}cm. Find semi-perimeter?`,
+        answer: 2 * side,
+      },
+      {
+        type: "area",
+        question:
+          currentLanguage === "vi"
+            ? `Cạnh = ${side}cm. Tìm diện tích?`
+            : `Side = ${side}cm. Find area?`,
+        answer: side * side,
+      },
+    ];
+
+    const selected = params[Math.floor(Math.random() * params.length)];
+    questionText = shapePrefix + selected.question;
+    currentAnswer = selected.answer;
+  } else {
+    // Hình chữ nhật: chiều dài từ 3-9, chiều rộng từ 2-8 (rộng < dài)
+    const length = Math.floor(Math.random() * 7) + 3; // 3-9
+    const width = Math.floor(Math.random() * Math.min(7, length - 1)) + 2; // 2-8, nhưng < length
+
+    // Chọn ngẫu nhiên tham số cần tìm
+    const params = [
+      {
+        type: "length",
+        question:
+          currentLanguage === "vi"
+            ? `Chiều rộng = ${width}cm, Chu vi = ${
+                2 * (length + width)
+              }cm. Tìm chiều dài?`
+            : `Width = ${width}cm, Perimeter = ${
+                2 * (length + width)
+              }cm. Find length?`,
+        answer: length,
+      },
+      {
+        type: "width",
+        question:
+          currentLanguage === "vi"
+            ? `Chiều dài = ${length}cm, Chu vi = ${
+                2 * (length + width)
+              }cm. Tìm chiều rộng?`
+            : `Length = ${length}cm, Perimeter = ${
+                2 * (length + width)
+              }cm. Find width?`,
+        answer: width,
+      },
+      {
+        type: "perimeter",
+        question:
+          currentLanguage === "vi"
+            ? `Chiều dài = ${length}cm, Chiều rộng = ${width}cm. Tìm chu vi?`
+            : `Length = ${length}cm, Width = ${width}cm. Find perimeter?`,
+        answer: 2 * (length + width),
+      },
+      {
+        type: "semiPerimeter",
+        question:
+          currentLanguage === "vi"
+            ? `Chiều dài = ${length}cm, Chiều rộng = ${width}cm. Tìm nửa chu vi?`
+            : `Length = ${length}cm, Width = ${width}cm. Find semi-perimeter?`,
+        answer: length + width,
+      },
+      {
+        type: "area",
+        question:
+          currentLanguage === "vi"
+            ? `Chiều dài = ${length}cm, Chiều rộng = ${width}cm. Tìm diện tích?`
+            : `Length = ${length}cm, Width = ${width}cm. Find area?`,
+        answer: length * width,
+      },
+      {
+        type: "lengthFromArea",
+        question:
+          currentLanguage === "vi"
+            ? `Chiều rộng = ${width}cm, Diện tích = ${
+                length * width
+              }cm². Tìm chiều dài?`
+            : `Width = ${width}cm, Area = ${length * width}cm². Find length?`,
+        answer: length,
+      },
+      {
+        type: "widthFromArea",
+        question:
+          currentLanguage === "vi"
+            ? `Chiều dài = ${length}cm, Diện tích = ${
+                length * width
+              }cm². Tìm chiều rộng?`
+            : `Length = ${length}cm, Area = ${length * width}cm². Find width?`,
+        answer: width,
+      },
+    ];
+
+    const selected = params[Math.floor(Math.random() * params.length)];
+    questionText = shapePrefix + selected.question;
+    currentAnswer = selected.answer;
+  }
+
+  questionEl.textContent = questionText;
+
+  // Track maximum possible score (if answered within 3 seconds)
+  maxPossibleScore += 100;
+
+  // Start timer
+  startTime = Date.now();
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(updateTimer, 100);
+}
+
 function generateQuestion() {
+  // Check if geometry mode
+  if (gameMode === "geometry") {
+    generateGeometryQuestion();
+    return;
+  }
+
   // Clear feedback and input
   const feedbackEl = DOM.feedback || document.getElementById("feedback");
   const answerEl = DOM.answer || document.getElementById("answer");
