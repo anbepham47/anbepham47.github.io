@@ -470,6 +470,10 @@ function backspace() {
 }
 
 function showModeSelection() {
+  // Hide language selector and edit name button
+  document.querySelector(".language-selector").style.display = "none";
+  document.querySelector(".edit-name-btn").style.display = "none";
+
   if (DOM.screens.start) {
     DOM.screens.start.classList.remove("active");
     DOM.screens.mode.classList.add("active");
@@ -488,6 +492,10 @@ function startGame(mode = "random", fixedNum = null) {
   gameMode = mode;
   fixedNumber = fixedNum;
 
+  // Hide language selector and edit name button
+  document.querySelector(".language-selector").style.display = "none";
+  document.querySelector(".edit-name-btn").style.display = "none";
+
   if (DOM.screens.start) {
     DOM.screens.start.classList.remove("active");
     DOM.screens.mode.classList.remove("active");
@@ -504,6 +512,10 @@ function startGame(mode = "random", fixedNum = null) {
 
 function backToStart() {
   cleanup();
+  // Show language selector and edit name button
+  document.querySelector(".language-selector").style.display = "flex";
+  document.querySelector(".edit-name-btn").style.display = "flex";
+
   if (DOM.screens.start) {
     DOM.screens.results.classList.remove("active");
     DOM.screens.leaderboard.classList.remove("active");
@@ -521,6 +533,10 @@ function backToStart() {
 }
 
 function showLeaderboard() {
+  // Hide language selector and edit name button
+  document.querySelector(".language-selector").style.display = "none";
+  document.querySelector(".edit-name-btn").style.display = "none";
+
   if (DOM.screens.start) {
     DOM.screens.start.classList.remove("active");
     DOM.screens.results.classList.remove("active");
